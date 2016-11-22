@@ -1,0 +1,16 @@
+neo4j:
+  image: neo4j:3.0
+  ports:
+    - "7474:7474"
+  volumes:
+    - ./db/dbms:/data/dbms
+server:
+  image: node:7
+  working_dir: /app
+  command: npm start
+  volumes:
+    - .:/app
+  ports:
+    - "3000:3000"
+  links:
+    - neo4j
