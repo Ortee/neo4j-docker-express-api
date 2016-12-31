@@ -21,9 +21,14 @@ $ npm install
 START
 ```
 $ docker-compose up
+Wait few seconds
+Open browser: http://localhost:7474/browser/
+Set neo4j password
+Open docker-compose.yml set CONNECTION_STRING_DEV with your new neo4j password
+Restart containers (ctrl+c & $ docker-compose up)
 ```
-http://localhost:7474/browser/
 
+## DOCS
 ```
 [CYPHER QUERIES](https://neo4j.com/docs/developer-manual/current/cypher/)   
 ```

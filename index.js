@@ -4,14 +4,14 @@ const express = require('express');
 const app = express();
 const neo4j = require('node-neo4j');
 const bodyParser = require('body-parser');
-const db = new neo4j('http://neo4j:password@neo4j:7474');
+const db = new neo4j(process.env.CONNECTION_STRING_DEV);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 // [GET] ALL PEOPLE
-// http://localhost:3000/people
-app.get('/people', function(req, res) {
+  // http://localhost:3000/api/people
+app.get('/api/people', function(req, res) {
   res.setHeader('Content-Type', 'application/json');
   db.cypherQuery('MATCH (n:Person) RETURN n', {}, function(err, results) {
     res.send(results.data);
@@ -22,8 +22,8 @@ app.get('/people', function(req, res) {
 });
 
 // [GET] SINGLE PERSON BY NAME
-// http://localhost:3000/person/John
-app.get('/person/:name', function(req, res) {
+// http://localhost:3000/api/person/John
+app.get('/api/person/:name', function(req, res) {
   res.setHeader('Content-Type', 'application/json');
   db.cypherQuery('MATCH (p:Person) WHERE p.name = "' + req.params.name + '" RETURN p',
    {}, function(err, results) {
@@ -35,32 +35,32 @@ app.get('/person/:name', function(req, res) {
 });
 
 // [POST] ADD PERSON
-// // http://localhost:3000/person
+// // http://localhost:3000/api/person
 
 // {
 //  "name": "John",
 //  "sex": "male"
 // }
-app.post('/person', function(req, res) {
+app.post('/api/person', function(req, res) {
   req.accepts('application/json');
   db.insertNode({
     name: req.body.name,
     sex: req.body.sex
   }, ['Person'], function(err) {
     err != true ?
-    res.status(200).send() :
+    res.status(201).send() :
     res.status(404).send();
   });
 });
 
 // [POST] ADD RELATIONSHIP BEETWEN PEOPLE
-// // http://localhost:3000/knows
+// // http://localhost:3000/api/knows
 
 // {
 //  "name1": "John",
 //  "name2": "Ann"
 // }
-app.post('/know', function(req, res) {
+app.post('/api/know', function(req, res) {
   req.accepts('application/json');
   db.cypherQuery('MATCH (a:Person { name: "' + req.body.name1 + '" }), (b:Person { name: "' + req.body.name2 + '" }) CREATE (a)-[:KNOWS]->(b)',
     {}, function(err) {
@@ -72,12 +72,12 @@ app.post('/know', function(req, res) {
 
 
 // [DELETE] DELETE PERSON
-// // http://localhost:3000/person
+// // http://localhost:3000/api/person
 
 // {
 //  "name": "John"
 // }
-app.delete('/person', function(req, res) {
+app.delete('/api/person', function(req, res) {
   req.accepts('application/json');
   db.cypherQuery('MATCH (p:Person)-[rel:KNOWS]->() WHERE p.name = "' + req.body.name + '" DELETE rel',
     {}, function(err) {
