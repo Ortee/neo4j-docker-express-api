@@ -15,4 +15,4 @@ server:
   links:
     - neo4j
   environment:
-    CONNECTION_STRING_DEV: http://neo4j:password@neo4j:7474
+    CONNECTION_STRING_DEV: http://neo4j:mateusz123@neo4j:7474

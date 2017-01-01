@@ -14,10 +14,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.get('/api/people', function(req, res) {
   res.setHeader('Content-Type', 'application/json');
   db.cypherQuery('MATCH (n:Person) RETURN n', {}, function(err, results) {
-    res.send(results.data);
-    err != true ?
-    res.status(200).send() :
-    res.status(404).send();
+    if (err) {
+      res.status(503).send('Check database connection');
+    } else {
+      res.send(results.data);
+      res.status(200).send();
+    }
   });
 });
 
@@ -27,10 +29,17 @@ app.get('/api/person/:name', function(req, res) {
   res.setHeader('Content-Type', 'application/json');
   db.cypherQuery('MATCH (p:Person) WHERE p.name = "' + req.params.name + '" RETURN p',
    {}, function(err, results) {
-     res.send(results.data);
-     err != true ?
-     res.status(200).send() :
-     res.status(404).send();
+     if (err) {
+       res.status(503).send('Check database connection');
+     } else {
+       if (results.data.length > 1) {
+         res.send(results.data);
+         res.status(200).send();
+       } else {
+         res.status(204).send();
+       }
+
+     }
    });
 });
 
