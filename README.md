@@ -28,6 +28,12 @@ Open docker-compose.yml set CONNECTION_STRING_DEV with your new neo4j password
 Restart containers (ctrl+c & $ docker-compose up)
 ```
 
+## Usage
+RUN TESTS
+```
+npm test
+```
+
 ## DOCS
 ```
 [CYPHER QUERIES](https://neo4j.com/docs/developer-manual/current/cypher/)   
